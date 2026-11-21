@@ -203,7 +203,11 @@ class TaskConfig:
 
         self.metadata_title = self.user_dict.get("METADATA")
 
-        self.leech_dest = self.up_dest or self.user_dict.get("LEECH_DUMP_CHAT")
+        self.leech_dest = (
+            self.up_dest
+            or self.user_dict.get("LEECH_DUMP_CHAT")
+            or Config.LEECH_COPY_CHAT
+        )
         self.up_dest = Config.LEECH_DUMP_CHAT
         self.hybrid_leech = TgClient.IS_PREMIUM_USER and (
             self.user_dict.get("HYBRID_LEECH")
