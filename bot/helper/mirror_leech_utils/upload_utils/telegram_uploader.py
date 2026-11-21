@@ -141,7 +141,8 @@ class TelegramUploader:
                                 leech_dest, _ = str(leech_dest).split("|", 1)
                             if leech_dest.lstrip("-").isdigit():
                                 leech_dest = int(leech_dest)
-                        await self._log_msg.copy(chat_id=leech_dest)
+                        if str(leech_dest) != str(self._log_msg.chat.id):
+                            await self._log_msg.copy(chat_id=leech_dest)
                     except Exception as e:
                         if not self._listener.is_cancelled:
                             LOGGER.error(
@@ -601,11 +602,13 @@ class TelegramUploader:
                                 leech_dest, _ = str(leech_dest).split("|", 1)
                             if leech_dest.lstrip("-").isdigit():
                                 leech_dest = int(leech_dest)
-                        await TgClient.bot.copy_message(
-                            chat_id=leech_dest,
-                            from_chat_id=self._sent_msg.chat.id,
-                            message_id=self._sent_msg.id,
-                        )
+                        # skip when the file is already in that chat (avoids duplicates)
+                        if str(leech_dest) != str(self._sent_msg.chat.id):
+                            await TgClient.bot.copy_message(
+                                chat_id=leech_dest,
+                                from_chat_id=self._sent_msg.chat.id,
+                                message_id=self._sent_msg.id,
+                            )
                     except Exception as e:
                         if not self._listener.is_cancelled:
                             LOGGER.error(
